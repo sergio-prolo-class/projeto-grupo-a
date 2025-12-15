@@ -47,15 +47,18 @@ public class Tabuleiro {
         }
     }
 
-    private static boolean verificaPosicao(char[][] tabuleiro, int linha, int coluna, int tamanho, boolean horizontal){ // método pra verificar se é possível colocar o navio naquela posição
-        if (horizontal){
-            if (coluna + tamanho > TAMANHO) { //Verifica o tamanho
-                return false;
-            }
+    // private static boolean verificaPosicao(char[][] tabuleiro, int linha, int coluna, int tamanho, boolean horizontal){ // método pra verificar se é possível colocar o navio naquela posição
+    //     if (horizontal){
+    //         if (coluna + tamanho > TAMANHO) { //Verifica o tamanho
+    //             return false;
+    //         }
 
 
-        }
-    }
+    //     }
+    // }
+
+
+    
 
 
     public static void main (String[] args){
