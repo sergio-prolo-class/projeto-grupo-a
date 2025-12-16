@@ -166,6 +166,10 @@ public class Tabuleiro {
     }
 
     private static boolean verificarOrientacaoNavio(char[][] tabuleiro, int linhaInicio, int colunaInicio, char tipo, int tamanhoNavio) {
+
+        if (colunaInicio + tamanhoNavio > TAMANHO || linhaInicio + tamanhoNavio > TAMANHO) {
+        return false;
+        }
         boolean horizontal = true;
         for (int c = colunaInicio; c < colunaInicio + tamanhoNavio; c++) {
             if (tabuleiro[linhaInicio][c] != tipo) {
@@ -205,6 +209,7 @@ public class Tabuleiro {
                     contadorNavio[indice]++;
                 }
         }
+    }
 
         for (int k=0; k < NAVIO.length; k++) {
             if (contadorNavio[k] != 1) { // verifica se o contador tem um número diferente de 1
@@ -218,7 +223,9 @@ public class Tabuleiro {
         }
 
         System.out.println("Quantidade correta de navios (1 de cada tipo)");
-    }}
+        }
+    
+
 
     private static void validarTabuleiro(Scanner sc) {
         char [][] tabuleiroRecebido = new char [TAMANHO][TAMANHO];
@@ -258,7 +265,7 @@ public class Tabuleiro {
         Scanner sc = new Scanner(System.in);
         
         if (args.length == 0) { // se não tiver o argumento na inicialização, ele dá as instruções
-            System.out.println("Uso: java BatalhaNaval <modo>");
+            System.out.println("Uso: java Tabuleiro <modo>");
             System.out.println("  G - Gerar tabuleiro aleatório");
             System.out.println("  V - Validar tabuleiro lido da entrada");
             return;
