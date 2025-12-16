@@ -103,13 +103,13 @@ public class Tabuleiro {
                 if (simbolo != 'P' && simbolo != 'E' && simbolo != 'C' && 
                     simbolo != 'S' && simbolo != 'N' && simbolo != AGUA) { // se algum dos caracteres não for o que é permitido, ele vai dar a mensagem e encerrar o programa
                     
-                    System.out.println("Tabuleiro inválido: navio desconhecido, representado pela letra " + simbolo);
+                    System.out.println("Tabuleiro INVÁLIDO: navio desconhecido, representado pela letra " + simbolo);
                     System.exit(0); // pra o programa encerrar sem verificar os outros métodos
                 }
             }
         }
 
-        System.out.println("Tabuleiro com símbolos válidos");
+        //System.out.println("Tabuleiro com símbolos válidos");
     }
 
     private static int contarNavioContínuo(char[][] tabuleiro, int linha, int coluna, char tipo, boolean[][] visitado) {
@@ -168,7 +168,7 @@ public class Tabuleiro {
                         tamanho = contarNavioContínuo(tabuleiro, i, j, tipo, visitado);
                     }
                     for (int k = 0; k < NAVIO.length; k++) {
-                        if (NAVIO[k] == NAVIO[k]) {
+                        if (NAVIO[k] == tipo) {
                             contador[k]+= tamanho;
                             break;
                         }
@@ -178,11 +178,11 @@ public class Tabuleiro {
         }
         
         for (int k = 0; k < NAVIO.length; k++) {
-            if (contador[k] != 1) {
+            if (contador[k] != TAMANHO_NAVIO[k]) {
                 if (contador[k] == 0) {
-                    System.out.printf("Tabuleiro inválido: navio %c não encontrado%n", NAVIO[k]);
+                    System.out.printf("Tabuleiro INVÁLIDO: navio %c não encontrado%n", NAVIO[k]);
                 } else {
-                    System.out.printf("Tabuleiro inválido: tamanho incorreto de '%c'%n", NAVIO[k]);
+                    System.out.printf("Tabuleiro INVÁLIDO: tamanho incorreto de '%c'%n", NAVIO[k]);
                 }
                 System.exit(0);
             }
@@ -192,13 +192,14 @@ public class Tabuleiro {
     }
 
 
+
     private static void validarTabuleiro(Scanner sc) {
         char [][] tabuleiroRecebido = new char [TAMANHO][TAMANHO];
 
         for (int i=0; i < TAMANHO; i++){
             if (!sc.hasNextLine()) { // verifica se tem menos linhas que o TAMANHO
-                System.out.println("Tabuleiro inválido: dimensões incorretas");
-                return;
+                System.out.println("Tabuleiro INVÁLIDO: dimensões incorretas");
+                System.exit(0);
             }
             
             String linha = sc.nextLine(); // pega a próxima linha
@@ -206,8 +207,8 @@ public class Tabuleiro {
             String[] partes = linha.split(" ");
 
             if (partes.length != TAMANHO){
-                System.out.println("Tabuleiro Inválido: dimensões incorretas");
-                return;
+                System.out.println("Tabuleiro INVÁLIDO: dimensões incorretas");
+                System.exit(0);
             }
 
             for (int j=0; j < TAMANHO; j++){
@@ -215,10 +216,10 @@ public class Tabuleiro {
             }
         }
         if (sc.hasNextLine()) {
-            System.out.println("Tabuleiro inválido: dimensões incorretas");
-            return;
+            System.out.println("Tabuleiro INVÁLIDO: dimensões incorretas");
+            System.exit(0);
         }
-        System.out.println("Dimensões válidas (10x10)");
+        //System.out.println("Dimensões válidas (10x10)");
 
         validarSimbolo(tabuleiroRecebido);
         validarTamanhoNavios(tabuleiroRecebido);
@@ -243,7 +244,7 @@ public class Tabuleiro {
             gerarTabuleiro();
         } else if (modo == 'V') { // se for V, verifica se o tabuleiro é válido
             validarTabuleiro(sc);
-            
+            System.out.println("VÁLIDOO ");
         } else {
             System.out.println("Modo inválido: " + modo); // aqui indica que o modo não é válido, caso não seja nenhuma daquelas letras
             return;
