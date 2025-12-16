@@ -2,12 +2,13 @@ import java.util.Scanner;
 import java.util.Random;
 
 public class Tabuleiro {
-
+    // CONSTANTES
     static final char AGUA = '.';  // Estamos definindo um constante para preencher a matriz
     static final int[] TAMANHO_NAVIO = {5,4,3,3,2}; // definimos um array para armazenar o valor de tamanho de cada navio
     static final char[] NAVIO = {'P','E','C','S','N'}; // definimos o nome de cada navio respectivo com o tamanho.
     static final int TAMANHO = 10;
     
+    // Primeira parte: gerar tabuleiro aleatório
     private static boolean verificaPosicao(char[][] tabuleiro, int linha, int coluna, int tamanho, boolean horizontal) {
 
         if (horizontal) { // faz a verificação se é horizontal
@@ -26,7 +27,9 @@ public class Tabuleiro {
             }
 
             for (int i = linha; i < linha + tamanho; i++) { // loop para verificar se o quadradinho está vazio
-                if (tabuleiro[i][coluna] != AGUA) return false;
+                if (tabuleiro[i][coluna] != AGUA) {
+                    return false; // retorna falso se o que encontrar for diferente de água
+                }
             }
         }
 
@@ -59,8 +62,10 @@ public class Tabuleiro {
     private static void imprimirTabuleiro(char[][] tabuleiro) { // recebe a matriz pra imprimir
         for (int i = 0; i < TAMANHO; i++) { // percorre as linhas 
             for (int j = 0; j < TAMANHO; j++) {  // percorre as colunas
-                System.out.print(tabuleiro[i][j]);
-                if (j < TAMANHO - 1) System.out.print(" ");
+                System.out.print(tabuleiro[i][j]); // imprime a linha X coluna 
+                if (j < TAMANHO - 1) {
+                    System.out.print(" "); // imprime um espaço depois do j, enquanto ele for menor que o TAMANHO
+                }
             }
             System.out.println();
         }
@@ -85,17 +90,64 @@ public class Tabuleiro {
         imprimirTabuleiro(tabuleiro); // chama o método que imprime o tabuleiro
     }
 
-    
+    // Segunda parte: verificar tabuleiro lido da entrada
 
+    public static void validarSimbolo(char[][] tabuleiro) { // recebe o tabuleiro montado no método validarTabuleiro (que já verificou se o tamanho é válido), para verificar os símbolos
+
+        for (int i = 0; i < TAMANHO; i++) {
+
+            for (int j = 0; j < TAMANHO; j++) {
+
+                char simbolo = tabuleiro[i][j]; // percorre todo o tabuleiro pra verificar se tem algum elemento inválido
+                
+                if (simbolo != 'P' && simbolo != 'E' && simbolo != 'C' && 
+                    simbolo != 'S' && simbolo != 'N' && simbolo != AGUA) { // se algum dos caracteres não for o que é permitido, ele vai dar a mensagem e encerrar o programa
+                    
+                    System.out.println("Tabuleiro inválido: navio desconhecido, representado pela letra " + simbolo);
+                    return;
+                }
+            }
+        }
+
+        System.out.println("Tabuleiro com símbolos válidos");
+    }
+
+    private static void validarTabuleiro(Scanner sc) {
+        char [][] tabuleiroRecebido = new char [TAMANHO][TAMANHO];
+
+        for (int i=0; i < TAMANHO; i++){
+            String linha = sc.nextLine();
+
+            String[] partes = linha.split(" ");
+
+            if (partes.length != TAMANHO){
+                System.out.println("Tabuleiro Inválido: dimensões incorretas");
+                return;
+            }
+
+            for (int j=0; j < TAMANHO; j++){
+                tabuleiroRecebido[i][j] = partes[j].charAt(0);
+            }
+        }
+        if (sc.hasNextLine()) {
+            System.out.println("Tabuleiro inválido: dimensões incorretas");
+            return;
+        }
+        System.out.println("Dimensões válidas (10x10)");
+
+        validarSimbolo(tabuleiroRecebido);
+    }
+
+    // Método main, aonde inicializa e começa o programa
     public static void main (String[] args){
 
-        Scanner sc = new Scanner(System.in); // Inicializa o Scanner, mas a principio não vamos utilizar
+        Scanner sc = new Scanner(System.in);
         
         if (args.length == 0) { // se não tiver o argumento na inicialização, ele dá as instruções
             System.out.println("Uso: java BatalhaNaval <modo>");
             System.out.println("  G - Gerar tabuleiro aleatório");
             System.out.println("  V - Validar tabuleiro lido da entrada");
-            System.exit(1);
+            return;
         }
 
         char modo = args[0].toUpperCase().charAt(0); // guarda o argumento na variavael modo, do tipo char
@@ -103,13 +155,13 @@ public class Tabuleiro {
         if (modo == 'G') { // se for G, gera o tabuleiro
             gerarTabuleiro();
         } else if (modo == 'V') { // se for V, verifica se o tabuleiro é válido
-            System.out.println("Modo verificar tabuleiro ainda não implementado");
+            validarTabuleiro(sc);
         } else {
             System.out.println("Modo inválido: " + modo); // aqui indica que o modo não é válido, caso não seja nenhuma daquelas letras
-            System.exit(1);
+            return;
         }
 
-
+        sc.close();
 
     }
 }
