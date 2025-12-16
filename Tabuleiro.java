@@ -7,7 +7,7 @@ public class Tabuleiro {
     static final int[] TAMANHO_NAVIO = {5,4,3,2,1}; // definimos um array para armazenar o valor de tamanho de cada navio
     static final char[] NAVIO = {'P','E','C','S','A'}; // definimos o nome de cada navio respectivo com o tamanho.
     static final int TAMANHO = 10;
-
+    
 
     private static char[][] geraTabuleiro(){
         char[][] tabuleiro = new char [TAMANHO][TAMANHO]; // Criamos a matriz e definimos o tamnho dela como 10 x 10
@@ -17,13 +17,8 @@ public class Tabuleiro {
                 tabuleiro [i][j] = AGUA;                  //definimos tudo com agua, deixando vazio
             }    
         }
-
-        Random random= new Random();
-
-
         return tabuleiro;                                 //retornamos o valor para o metodo estatico como sendo a matriz com agua
     }
-
     private static void posicionaNavio(char[][] tabuleiro, char simbolo, int tamanho, Random random) {
         boolean posicionado = false; // verifica se o navio foi posicionado, inicializa em 'false' pra indicar que ele não ta posicionado
 
@@ -47,28 +42,43 @@ public class Tabuleiro {
         }
     }
 
-    // private static boolean verificaPosicao(char[][] tabuleiro, int linha, int coluna, int tamanho, boolean horizontal){ // método pra verificar se é possível colocar o navio naquela posição
-    //     if (horizontal){
-    //         if (coluna + tamanho > TAMANHO) { //Verifica o tamanho
-    //             return false;
-    //         }
+    private static boolean verificaPosicao(char[][] tabuleiro, int linha, int coluna, int tamanho, boolean horizontal) {
 
+        if (horizontal) {
+            if (coluna + tamanho > TAMANHO) return false;
 
-    //     }
-    // }
+            for (int j = coluna; j < coluna + tamanho; j++) {
+                if (tabuleiro[linha][j] != AGUA) return false;
+            }
 
+        } else {
+            if (linha + tamanho > TAMANHO) return false;
 
-    
+            for (int i = linha; i < linha + tamanho; i++) {
+                if (tabuleiro[i][coluna] != AGUA) return false;
+            }
+        }
+
+        return true;
+    }
 
 
     public static void main (String[] args){
-        Scanner sc = new Scanner(System.in); 
+        Random random = new Random();
+        char[][] tabuleiro = geraTabuleiro();
 
+        posicionaNavio(tabuleiro,'P', 5, random);
+        posicionaNavio(tabuleiro,'E', 4, random);
+        posicionaNavio(tabuleiro,'C', 3, random);
+        posicionaNavio(tabuleiro,'S', 2, random);
+        posicionaNavio(tabuleiro,'A', 1, random);
 
+        for (int i = 0; i < 10; i++) {          // Percorre as linhas
+            for (int j = 0; j < 10; j++) {      // Percorre as colunas
+                System.out.print(tabuleiro[i][j] + " "); // Imprime cada posição
+            }
+            System.out.println();               // Quebra a linha após cada linha da matriz
+        }
 
-    
-   
-
-    sc.close();
     }
 }
