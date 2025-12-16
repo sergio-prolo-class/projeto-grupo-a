@@ -104,7 +104,7 @@ public class Tabuleiro {
                     simbolo != 'S' && simbolo != 'N' && simbolo != AGUA) { // se algum dos caracteres não for o que é permitido, ele vai dar a mensagem e encerrar o programa
                     
                     System.out.println("Tabuleiro inválido: navio desconhecido, representado pela letra " + simbolo);
-                    return;
+                    System.exit(0); // pra o programa encerrar sem verificar os outros métodos
                 }
             }
         }
@@ -112,11 +112,124 @@ public class Tabuleiro {
         System.out.println("Tabuleiro com símbolos válidos");
     }
 
+    private static int contarTamanhoNavio(char[][] tabuleiro, int linha, int coluna, char tipo, boolean[][] visitado) {
+        int tamanho = 0;
+        
+        // Tenta primeiro HORIZONTAL
+        if (podeSerHorizontal(tabuleiro, linha, coluna, tipo)) {
+            while (coluna < TAMANHO && tabuleiro[linha][coluna] == tipo) {
+                visitado[linha][coluna] = true;
+                tamanho++;
+                coluna++;
+            }
+            return tamanho;
+        }
+        
+        // Se não for horizontal, tenta VERTICAL
+        while (linha < TAMANHO && tabuleiro[linha][coluna] == tipo) {
+            visitado[linha][coluna] = true;
+            tamanho++;
+            linha++;
+        }
+        
+        return tamanho;
+    }
+
+    private static void validarTamanho(char tipo, int tamanho) {
+        int tamanhoEsperado = 0;
+        
+        // Procura o tamanho esperado do navio
+        for (int k = 0; k < NAVIO.length; k++) {
+            if (NAVIO[k] == tipo) {
+                tamanhoEsperado = TAMANHO_NAVIO[k];
+                break;
+            }
+        }
+        
+        if (tamanho != tamanhoEsperado) {
+            System.out.println("Tabuleiro inválido: " + tipo + " com tamanho incorreto");
+            System.exit(0);
+        }
+    }
+
+
+    private static boolean podeSerHorizontal(char[][] tabuleiro, int linha, int coluna, char tipo) {
+        // Verifica se tem pelo menos 2 células na horizontal
+        return (coluna + 1 < TAMANHO && tabuleiro[linha][coluna + 1] == tipo);
+    }
+
+    private static int pegaIndiceNavio(char tipo) {
+        for (int k = 0; k < NAVIO.length; k++) {
+            if (NAVIO[k] == tipo) return k;
+        }
+        return -1;
+    }
+
+    private static boolean verificarOrientacaoNavio(char[][] tabuleiro, int linhaInicio, int colunaInicio, char tipo, int tamanhoNavio) {
+        boolean horizontal = true;
+        for (int c = colunaInicio; c < colunaInicio + tamanhoNavio; c++) {
+            if (tabuleiro[linhaInicio][c] != tipo) {
+                horizontal = false;
+                break;
+            }
+        }
+        
+        boolean vertical = true;
+        for (int l = linhaInicio; l < linhaInicio + tamanhoNavio; l++) {
+            if (tabuleiro[l][colunaInicio] != tipo) {
+                vertical = false;
+                break;
+            }
+        }
+        
+        return horizontal || vertical;
+    }
+
+
+
+    private static void validarNavios(char[][] tabuleiro){
+        boolean[][] quadrado = new boolean[TAMANHO][TAMANHO]; // matriz auxiliar para marcar os quadrados já vistos
+        int[] contadorNavio = new int[NAVIO.length]; // cria um array com o tamanho do array que guarda o nome dos navios
+
+        for (int i=0; i < TAMANHO; i++) {
+            for (int j=0; j < TAMANHO; j++) {
+                if (tabuleiro[i][j] != AGUA && !quadrado[i][j]) {
+                    char tipo = tabuleiro[i][j];
+                    int indice = pegaIndiceNavio(tipo);
+                    int tamanho = contarTamanhoNavio(tabuleiro, i, j, tipo, quadrado);
+                    if (!verificarOrientacaoNavio(tabuleiro, i, j, tipo, tamanho)) {
+                        System.out.println("Tabuleiro inválido: " + tipo + " não está totalmente horizontal ou vertical");
+                        System.exit(0);
+                    }
+                    validarTamanho(tipo, tamanho);
+                    contadorNavio[indice]++;
+                }
+        }
+
+        for (int k=0; k < NAVIO.length; k++) {
+            if (contadorNavio[k] != 1) { // verifica se o contador tem um número diferente de 1
+                if (contadorNavio[k] == 0) { // se for zero, tem menos navios do que deveria
+                    System.out.printf("Tabuleiro inválido: navio %c não encontrado %n", NAVIO[k]);
+                } else { //se não for zero, e não for 1, tem mais navios do mesmo tipo
+                    System.out.printf("Tabuleiro inválido: múltiplos %c %n", NAVIO[k]);
+                }
+                System.exit(0); // pra sair do programa de vez
+            }
+        }
+
+        System.out.println("Quantidade correta de navios (1 de cada tipo)");
+    }}
+
     private static void validarTabuleiro(Scanner sc) {
         char [][] tabuleiroRecebido = new char [TAMANHO][TAMANHO];
 
         for (int i=0; i < TAMANHO; i++){
-            String linha = sc.nextLine();
+            if (!sc.hasNextLine()) { // verifica se tem menos linhas que o TAMANHO
+                System.out.println("Tabuleiro inválido: dimensões incorretas");
+                return;
+            }
+            
+            String linha = sc.nextLine(); // pega a próxima linha
 
             String[] partes = linha.split(" ");
 
@@ -136,6 +249,7 @@ public class Tabuleiro {
         System.out.println("Dimensões válidas (10x10)");
 
         validarSimbolo(tabuleiroRecebido);
+        validarNavios(tabuleiroRecebido);
     }
 
     // Método main, aonde inicializa e começa o programa
