@@ -228,7 +228,7 @@ public class Tabuleiro {
             }
         }
 
-        System.out.println("Quantidade correta de navios (1 de cada tipo, todos com tamanho correto)");
+        //System.out.println("Quantidade correta de navios (1 de cada tipo, todos com tamanho correto)");
     }
 
 
@@ -285,7 +285,7 @@ public class Tabuleiro {
             gerarTabuleiro();
         } else if (modo == 'V') { // se for V, verifica se o tabuleiro é válido
             validarTabuleiro(sc);
-            System.out.println("VÁLIDOO ");
+            System.out.println("Tabuleiro VÁLIDO ");
         } else {
             System.out.println("Modo inválido: " + modo); // aqui indica que o modo não é válido, caso não seja nenhuma daquelas letras
             return;
